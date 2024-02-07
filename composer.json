@@ -1,0 +1,27 @@
+{
+  "name": "root/mini-php-framework",
+  "autoload": {
+    "psr-4": {
+      "App\\": "src"
+    },
+    "files": [
+      "src/Core/Autoload.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "qbuache",
+      "email": "qbuache@outlook.com"
+    }
+  ],
+  "require": {
+    "nesbot/carbon": "^2.70",
+    "guzzlehttp/guzzle": "^7.8",
+    "vlucas/phpdotenv": "^5.6",
+    "zircote/swagger-php": "^4.8",
+    "doctrine/annotations": "^2.0"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^5.4"
+  }
+}
