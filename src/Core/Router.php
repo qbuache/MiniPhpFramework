@@ -10,13 +10,12 @@ use App\Exceptions\ApiException;
 class Router {
 
     public static function route() {
-        $method = self::getMethod();
-        $target = self::getTarget();
+        $method = request()->method();
+        $target = request()->target();
 
-        /**
-         * Permet les requêtes CORS
-         */
-        if ($method === HttpMethod::OPTIONS) {
+        // Permet les requêtes CORS
+        response()->addHeader(["Access-Control-Allow-Origin: *", "Access-Control-Allow-Headers: *"]);
+        if ($method === HttpMethod::OPTIONS && request()->header("Access-Control-Request-Method") !== null) {
             return true;
         }
 
@@ -37,13 +36,5 @@ class Router {
         }
 
         Utils::redirect(config("router.404"));
-    }
-
-    public static function getMethod() {
-        return strtoupper($_POST["_method"] ?? $_SERVER["REQUEST_METHOD"]);
-    }
-
-    public static function getTarget() {
-        return str_replace(__ROOT__, "", strtok($_SERVER["REQUEST_URI"], "?"));
     }
 }

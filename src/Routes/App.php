@@ -8,9 +8,11 @@ use App\Core\Route;
 class App {
 
     public function routes() {
-        return [
-            (new Route)->get("/missing-group", "missingGroup")->controller(AppController::class),
-            (new Route)->any("/page-404", "page404")->controller(AppController::class),
-        ];
+        return (new Route)->controller(AppController::class)->prefix("/app")->group(
+            [
+                (new Route)->get("/missing-group", "missingGroup"),
+                (new Route)->any("/page-404", "page404"),
+            ],
+        );
     }
 }

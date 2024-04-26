@@ -47,7 +47,7 @@ class Request extends Singleton {
      * @return mixed
      */
     public static function all(?string $key = null, $default = null) {
-        $data = array_merge(self::get(), self::post(), self::patch(), self::delete());
+        $data = array_merge(self::get(), self::post(), self::patch(), self::delete(), self::files());
         return self::getDataOrDefault($data, $key, $default);
     }
 
@@ -72,6 +72,18 @@ class Request extends Singleton {
     public static function env(?string $key = null, $default = null) {
         return self::getDataOrDefault($_ENV, $key, $default);
     }
+
+    /**
+     * Retourne la valeur de la clé dans $_FILES, ou le tableau si aucune clé n'est renseignée
+     * 
+     * @param ?string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public static function files(?string $key = null, $default = null) {
+        return self::getDataOrDefault($_FILES, $key, $default);
+    }
+
 
     /**
      * Retourne la valeur de la clé dans $_GET, ou le tableau si aucune clé n'est renseignée
@@ -129,12 +141,21 @@ class Request extends Singleton {
     }
 
     /**
-     * Retourn les données reçues en fonction de la méthode de la route en cours
+     * Retourne la méthode HTTP utilisée
+     * 
+     * @return string
+     */
+    public static function method() {
+        return strtoupper($_POST["_method"] ?? $_SERVER["REQUEST_METHOD"]);
+    }
+
+    /**
+     * Retourne les données reçues en fonction de la méthode de la route en cours
      * 
      * @return mixed
      */
     public static function methodData() {
-        switch (request()->getRoute()->getMethod()) {
+        switch (request()->method()) {
             case HttpMethod::GET:
                 return self::get();
             case HttpMethod::POST:
@@ -192,6 +213,15 @@ class Request extends Singleton {
     }
 
     /**
+     * Retourne la chemin demandé
+     * 
+     * @return string
+     */
+    public static function target() {
+        return str_replace(__ROOT__, "", strtok($_SERVER["REQUEST_URI"], "?"));
+    }
+
+    /**
      * Retourne la valeur de la clé dans le tableau, ou le tableau si aucune clé n'est renseignée
      * 
      * @param array $data
@@ -199,7 +229,7 @@ class Request extends Singleton {
      * @param mixed $default
      * @return mixed
      */
-    private static function getDataOrDefault(array $data, string $key, $default) {
+    private static function getDataOrDefault(array $data, ?string $key, $default) {
         return isset($key) ? ($data[$key] ?? $default) : $data;
     }
 }

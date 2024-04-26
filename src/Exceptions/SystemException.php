@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use App\Helpers\Logger;
-use Exception;
 
 /**
  * Exception spécifique à des problèmes systèmes qui 
@@ -14,24 +13,24 @@ class SystemException extends MyException {
     /**
      * Id du log
      */
-    private string $uniqueId;
-
-    /**
-     * @param string            $message    Message de l'exception
-     * @param integer           $code       Code d'erreur ou code HTTP de l'exception
-     * @param Exception|null    $previous   L'exception précédemment lancée
-     */
-    public function __construct(string $message, int $code = 0, Exception $previous = null) {
-        parent::__construct($message, $code, $previous);
-        $this->uniqueId = Logger::exception($this);
-    }
+    private ?string $uniqueId = null;
 
     /**
      * Retourne l'ID unique de l'entrée de log
      *
-     * @return array
+     * @return ?string
      */
-    public function getUniqueId() {
+    public function getUniqueId(): ?string {
         return $this->uniqueId;
+    }
+
+    /**
+     * Log l'exception
+     *
+     * @return SystemException
+     */
+    public function log(): SystemException {
+        $this->uniqueId = Logger::exception($this);
+        return $this;
     }
 }

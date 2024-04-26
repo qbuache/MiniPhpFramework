@@ -14,16 +14,18 @@ class App {
 
     public function execute() {
         try {
-            $response = Router::route();
+            $data = Router::route();
         } catch (Exception $th) {
-            $response = $th;
+            $data = $th;
         }
-        echo response()->setData($response);
+        echo response()->setData($data);
     }
 
     private function bootstrap() {
         define("__APP__", __DIR__);
         define("__ROOT__", str_replace("/index.php", "", $_SERVER["SCRIPT_NAME"]));
         Dotenv::createImmutable(__DIR__ . '/../')->load();
+
+        session()->start();
     }
 }

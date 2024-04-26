@@ -23,11 +23,15 @@ abstract class Auth {
         return substr($authorizationHeader ?? null, 7);
     }
 
+    public static function getEnvValues($key, $separator = ",") {
+        return explode($separator, $_ENV[$key]);
+    }
+
     public static function getHeader($header, $default = false) {
         return getallheaders()[$header] ?? $default;
     }
 
-    public static function getEnvValues($key, $separator = ",") {
-        return explode($separator, $_ENV[$key]);
+    public static function getXApiKey() {
+        return self::getHeader("X-Api-Key");
     }
 }

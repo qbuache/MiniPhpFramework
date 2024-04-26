@@ -140,6 +140,7 @@ class Response extends Singleton {
             if (is_a($data, ApiException::class)) {
                 $response = $this->fromApiException($data);
             } else if (is_a($data, SystemException::class)) {
+                $data->log();
                 $response = $this->fromSystemException($data);
             }
         }
@@ -219,14 +220,11 @@ class Response extends Singleton {
      * @return array
      */
     private function fromResponseInterface(ResponseInterface $data): array {
-        $response = [
+        return [
             "code" => $data->getStatusCode(),
             "message" => $data->getReasonPhrase(),
+            "data" => get_object_vars($data),
         ];
-        if (!empty($data->group_id)) {
-            $response["group_id"] = $data->group_id;
-        }
-        return $response;
     }
 
     /**
